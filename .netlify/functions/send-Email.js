@@ -7,15 +7,10 @@ exports.handler = async function(event, context) {
   try {
     // Verificar o corpo da solicitação
     const { pdfBase64, email } = JSON.parse(event.body);
-    
-    if (!pdfBase64 || !email) {
-      throw new Error('pdfBase64 ou email ausente no corpo da solicitação');
-    }
-
     console.log('PDF Base64:', pdfBase64);
     console.log('Recipient Email:', email);
 
-    // Configurar o transportador
+    // Configurar o transportador de e-mail
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -27,7 +22,7 @@ exports.handler = async function(event, context) {
     // Opções do e-mail
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: email, // Enviar para o e-mail fornecido no corpo da solicitação
+      to: email, // Usar o e-mail passado na solicitação
       subject: 'PDF da Inscrição',
       text: 'Anexo está o PDF da sua inscrição.',
       attachments: [
@@ -44,6 +39,7 @@ exports.handler = async function(event, context) {
     // Enviar e-mail
     await transporter.sendMail(mailOptions);
     console.log('E-mail enviado com sucesso');
+    
     return {
       statusCode: 200,
       body: JSON.stringify({ message: 'E-mail enviado com sucesso!' }),
@@ -52,8 +48,7 @@ exports.handler = async function(event, context) {
     console.error('Erro ao enviar e-mail:', error);
     return {
       statusCode: 500,
-      console.log("erro do carai")
-      body: JSON.stringify({ message: 'Falha ao enviar e-mail.', error: error.message }),
+      body: JSON.stringify({ message: 'Falha ao enviar e-mail back.', error: error.message }),
     };
   }
 };

@@ -1,54 +1,32 @@
-const nodemailer = require('nodemailer');
-const { Buffer } = require('buffer');
-
 exports.handler = async function(event, context) {
   console.log('Request received');
-
+  
   try {
     // Verificar o corpo da solicitação
-    const { pdfBase64, email } = JSON.parse(event.body);
-    console.log('PDF Base64:', pdfBase64);
-    console.log('Recipient Email:', email);
-
-    // Configurar o transportador de e-mail
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Opções do e-mail
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email, // Usar o e-mail passado na solicitação
-      subject: 'PDF da Inscrição',
-      text: 'Anexo está o PDF da sua inscrição.',
-      attachments: [
-        {
-          filename: 'inscricao_intercursos.pdf',
-          content: Buffer.from(pdfBase64, 'base64'),
-          encoding: 'base64',
-        },
-      ],
-    };
-
-    console.log('Mail Options:', mailOptions);
-
-    // Enviar e-mail
-    await transporter.sendMail(mailOptions);
-    console.log('E-mail enviado com sucesso');
+    const body = JSON.parse(event.body);
     
+    // Verificar se os campos esperados estão presentes
+    if (!body.pdfBase64 || !body.email) {
+      console.error('Corpo da solicitação inválido:', body);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Corpo da solicitação inválido. Verifique os campos pdfBase64 e email.' }),
+      };
+    }
+    
+    console.log('PDF Base64:', body.pdfBase64);
+    console.log('Recipient Email:', body.email);
+
+    // Se o corpo estiver correto
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'E-mail enviado com sucesso!' }),
+      body: JSON.stringify({ message: 'Corpo da solicitação recebido com sucesso.' }),
     };
   } catch (error) {
-    console.error('Erro ao enviar e-mail:', error);
+    console.error('Erro ao processar solicitação:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Falha ao enviar e-mail back.', error: error.message }),
+      body: JSON.stringify({ message: 'Erro ao processar solicitação.', error: error.message }),
     };
   }
 };

@@ -1,32 +1,44 @@
-exports.handler = async function(event, context) {
-  console.log('Request received');
-  
-  try {
-    // Verificar o corpo da solicitação
-    const body = JSON.parse(event.body);
-    
-    // Verificar se os campos esperados estão presentes
-    if (!body.pdfBase64 || !body.email) {
-      console.error('Corpo da solicitação inválido:', body);
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'Corpo da solicitação inválido. Verifique os campos pdfBase64 e email.' }),
-      };
-    }
-    
-    console.log('PDF Base64:', body.pdfBase64);
-    console.log('Recipient Email:', body.email);
+const nodemailer = require('nodemailer');
 
-    // Se o corpo estiver correto
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Corpo da solicitação recebido com sucesso.' }),
+exports.handler = async function(event, context) {
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ message: 'Método não permitido' }),
+        };
+    }
+
+    const { to, subject, text, html } = JSON.parse(event.body);
+
+    // Crie um transporte de e-mail
+    let transporter = nodemailer.createTransport({
+        service: 'gmail', // ou outro serviço de e-mail
+        auth: {
+            user: process.env.EMAIL_USER, // E-mail do remetente
+            pass: process.env.EMAIL_PASS // Senha do e-mail
+        }
+    });
+
+    // Defina os detalhes do e-mail
+    let mailOptions = {
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        text,
+        html
     };
-  } catch (error) {
-    console.error('Erro ao processar solicitação:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Erro ao processar solicitação.', error: error.message }),
-    };
-  }
+
+    try {
+        // Envie o e-mail
+        let info = await transporter.sendMail(mailOptions);
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'E-mail enviado com sucesso', response: info.response }),
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Erro ao enviar e-mail', error }),
+        };
+    }
 };

@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { Buffer } = require('buffer');
 
 exports.handler = async function(event, context) {
     if (event.httpMethod !== 'POST') {
@@ -8,7 +9,7 @@ exports.handler = async function(event, context) {
         };
     }
 
-    const { to, subject, text, html } = JSON.parse(event.body);
+    const { pdfBase64, email } = JSON.parse(event.body);
 
     // Crie um transporte de e-mail
     let transporter = nodemailer.createTransport({
@@ -19,13 +20,19 @@ exports.handler = async function(event, context) {
         }
     });
 
-    // Defina os detalhes do e-mail
+    // Defina o conteúdo do e-mail
     let mailOptions = {
         from: process.env.EMAIL_USER,
-        to,
-        subject,
-        text,
-        html
+        to: email,
+        subject: 'Seu PDF Anexo',
+        text: 'Segue em anexo o PDF solicitado.',
+        attachments: [
+            {
+                filename: 'documento.pdf',
+                content: Buffer.from(pdfBase64, 'base64'),
+                encoding: 'base64'
+            }
+        ]
     };
 
     try {

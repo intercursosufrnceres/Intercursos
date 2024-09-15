@@ -36,7 +36,7 @@ exports.handler = async function(event, context) {
     console.error('Erro ao enviar e-mail:', error); // Adiciona um log do erro
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Falha ao enviar e-mail.', error: error.message }), // Inclui o erro no corpo da resposta
+      body: JSON.stringify({ message: 'Falha ao enviar e-mail back.', error: error.message }), // Inclui o erro no corpo da resposta
     };
   }
 };

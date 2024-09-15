@@ -49,7 +49,7 @@ exports.handler = async function(event, context) {
 
     let mailOptions = {
         from: process.env.EMAIL_USER,
-        to: email,
+        to: "intercursosufrnceres@gmail.com",
         subject: 'Seu PDF Anexo',
         text: 'Segue em anexo o PDF solicitado.',
 

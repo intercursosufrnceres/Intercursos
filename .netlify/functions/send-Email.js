@@ -52,6 +52,7 @@ exports.handler = async function(event, context) {
     console.error('Erro ao enviar e-mail:', error);
     return {
       statusCode: 500,
+      console.log("erro do carai")
       body: JSON.stringify({ message: 'Falha ao enviar e-mail.', error: error.message }),
     };
   }

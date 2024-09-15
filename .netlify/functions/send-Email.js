@@ -52,13 +52,7 @@ exports.handler = async function(event, context) {
         to: email,
         subject: 'Seu PDF Anexo',
         text: 'Segue em anexo o PDF solicitado.',
-        attachments: [
-            {
-                filename: 'documento.pdf',
-                content: Buffer.from(pdfBase64, 'base64'),
-                encoding: 'base64'
-            }
-        ]
+
     };
 
     try {

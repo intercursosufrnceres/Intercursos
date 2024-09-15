@@ -1,3 +1,4 @@
+require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
 const nodemailer = require('nodemailer');
 const { Buffer } = require('buffer');
 

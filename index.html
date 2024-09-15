@@ -820,13 +820,13 @@
     
         // Send the PDF via email
         try {
-            const response = await fetch("/.netlify/functions/send-email", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ pdfBase64, email }),
-            });
+            const response = await fetch("/.netlify/functions/send-Email", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ pdfBase64, email }),
+});
     
             const result = await response.json();
             if (response.ok) {

@@ -816,7 +816,7 @@
         const pdfBase64 = btoa(
             String.fromCharCode(...new Uint8Array(mergedPdfBytes))
         );
-        const email = process.env.REACT_APP_EMAIL_RECIPIENT // Replace with the recipient's email
+        const email = process.env.EMAIL_RECIPIENT // Replace with the recipient's email
     
         // Send the PDF via email
         try {

@@ -36,7 +36,7 @@ exports.handler = async function(event, context) {
         transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USER,
+                user: 'heal986rn@gmail.com',
                 pass: process.env.EMAIL_PASS
             }
         });
@@ -48,7 +48,7 @@ exports.handler = async function(event, context) {
     }
 
     let mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: 'heal986rn@gmail.com',
         to: 'intercursosufrnceres@gmail.com',
         subject: 'Seu PDF Anexo',
         text: 'Segue em anexo o PDF solicitado.',

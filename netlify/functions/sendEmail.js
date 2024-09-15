@@ -17,7 +17,7 @@ exports.handler = async function(event, context) {
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: email,
+    to: process.env.REACT_APP_EMAIL_RECIPIENT,,
     subject: 'PDF da Inscrição',
     text: 'Anexo está o PDF da sua inscrição.',
     attachments: [

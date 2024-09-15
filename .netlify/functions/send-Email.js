@@ -1,4 +1,4 @@
-require('dotenv').config(); // Carrega variáveis de ambiente do arquivo .env
+require('dotenv').config();
 const nodemailer = require('nodemailer');
 const { Buffer } = require('buffer');
 
@@ -10,18 +10,43 @@ exports.handler = async function(event, context) {
         };
     }
 
-    const { pdfBase64, email } = JSON.parse(event.body);
+    let requestData;
 
-    // Crie um transporte de e-mail
-    let transporter = nodemailer.createTransport({
-        service: 'gmail', // ou outro serviço de e-mail
-        auth: {
-            user: process.env.EMAIL_USER, // E-mail do remetente
-            pass: process.env.EMAIL_PASS // Senha do e-mail
-        }
-    });
+    try {
+        requestData = JSON.parse(event.body);
+    } catch (error) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: 'Dados de entrada inválidos', error: error.message }),
+        };
+    }
 
-    // Defina o conteúdo do e-mail
+    const { pdfBase64, email } = requestData;
+
+    if (!pdfBase64 || !email) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: 'Dados incompletos. Certifique-se de enviar pdfBase64 e email.' }),
+        };
+    }
+
+    let transporter;
+
+    try {
+        transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Erro ao criar transporte de e-mail', error: error.message }),
+        };
+    }
+
     let mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
@@ -37,7 +62,6 @@ exports.handler = async function(event, context) {
     };
 
     try {
-        // Envie o e-mail
         let info = await transporter.sendMail(mailOptions);
         return {
             statusCode: 200,
@@ -46,7 +70,7 @@ exports.handler = async function(event, context) {
     } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Erro ao enviar e-mail', error }),
+            body: JSON.stringify({ message: 'Erro ao enviar e-mail', error: error.message }),
         };
     }
 };

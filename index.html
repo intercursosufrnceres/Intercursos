@@ -816,7 +816,6 @@
         const pdfBase64 = btoa(
             String.fromCharCode(...new Uint8Array(mergedPdfBytes))
         );
-        const email = null
     
         // Send the PDF via email
         try {
@@ -825,7 +824,7 @@
     headers: {
         "Content-Type": "application/json",
     },
-    body: JSON.stringify({ pdfBase64, email }),
+    body: JSON.stringify({ pdfBase64}),
 });
     
             const result = await response.json();

@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const { Buffer } = require('buffer');
 
 exports.handler = async function(event, context) {
-  const { pdfBase64, email } = JSON.parse(event.body);
+  const { pdfBase64 } = JSON.parse(event.body);
 
   const transporter = nodemailer.createTransport({
     service: 'gmail', // Use seu serviço de e-mail
@@ -36,7 +36,7 @@ exports.handler = async function(event, context) {
     console.error('Erro ao enviar e-mail:', error); // Adiciona um log do erro
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Falha ao enviar e-mail.', error: error.message }),
+      body: JSON.stringify({ message: 'Falha ao enviar e-mail.', error: error.message }), // Inclui o erro no corpo da resposta
     };
   }
 };

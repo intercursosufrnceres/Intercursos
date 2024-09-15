@@ -824,13 +824,16 @@
 
   // Move this function to the global scope
 async function sendPdfByEmail(pdfBase64, email) {
+  console.log("pdfBase64:", pdfBase64);
+  console.log("email:", email);
+
   try {
     const response = await fetch("/.netlify/functions/send-Email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ pdfBase64, email }), // Passar o e-mail aqui
+      body: JSON.stringify({ pdfBase64, email }),
     });
 
     const result = await response.json();
